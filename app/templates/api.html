@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>API文档 - Cursor 长效Token获取</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/json.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/http.min.js"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        pre {
+            border-radius: 0.5rem;
+            margin: 1rem 0;
+        }
+        .api-section {
+            scroll-margin-top: 80px;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="relative overflow-hidden">
+        <div class="gradient-bg absolute inset-0 opacity-10 z-0"></div>
+        <header class="sticky top-0 z-10 py-4 px-4 sm:px-6 lg:px-8 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-indigo-600">
+                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                        <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                    </svg>
+                    <h1 class="text-xl font-semibold text-gray-900">Cursor 长效Token获取</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-home mr-1"></i> 首页
+                    </a>
+                    <a href="https://github.com/kiritoko1029/cursor-longtoken" target="_blank" class="text-gray-500 hover:text-gray-700">
+                        <i class="fab fa-github"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <div class="relative z-10 flex">
+            <!-- 侧边栏导航 -->
+            <aside class="sticky top-[72px] h-[calc(100vh-72px)] w-64 hidden lg:block p-4 overflow-y-auto bg-white/80 backdrop-blur-sm">
+                <nav>
+                    <div class="font-medium text-lg text-gray-900 mb-4">API文档目录</div>
+                    <ul class="space-y-2">
+                        <li>
+                            <a href="#introduction" class="text-gray-600 hover:text-indigo-600 block py-1">简介</a>
+                        </li>
+                        <li>
+                            <a href="#authentication" class="text-gray-600 hover:text-indigo-600 block py-1">认证方式</a>
+                        </li>
+                        <li>
+                            <a href="#endpoints" class="text-gray-600 hover:text-indigo-600 block py-1">API端点</a>
+                            <ul class="ml-4 mt-1 space-y-1">
+                                <li>
+                                    <a href="#get-token" class="text-gray-600 hover:text-indigo-600 block py-1 text-sm">获取长效Token</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#responses" class="text-gray-600 hover:text-indigo-600 block py-1">响应格式</a>
+                        </li>
+                        <li>
+                            <a href="#examples" class="text-gray-600 hover:text-indigo-600 block py-1">使用示例</a>
+                            <ul class="ml-4 mt-1 space-y-1">
+                                <li>
+                                    <a href="#curl" class="text-gray-600 hover:text-indigo-600 block py-1 text-sm">cURL</a>
+                                </li>
+                                <li>
+                                    <a href="#python" class="text-gray-600 hover:text-indigo-600 block py-1 text-sm">Python</a>
+                                </li>
+                                <li>
+                                    <a href="#javascript" class="text-gray-600 hover:text-indigo-600 block py-1 text-sm">JavaScript</a>
+                                </li>
+                            </ul>
+                        </li>
+                        <li>
+                            <a href="#errors" class="text-gray-600 hover:text-indigo-600 block py-1">错误处理</a>
+                        </li>
+                    </ul>
+                </nav>
+            </aside>
+
+            <!-- 主要内容 -->
+            <main class="flex-1 max-w-3xl mx-auto px-4 sm:px-6 py-8">
+                <div class="bg-white shadow-lg rounded-2xl overflow-hidden mb-8">
+                    <div class="px-6 py-8 sm:p-10">
+                        <h1 class="text-3xl font-bold text-gray-900">Cursor 长效Token API</h1>
+                        <p class="mt-2 text-gray-600">通过API自动获取Cursor长效访问令牌</p>
+                    </div>
+                </div>
+
+                <div class="bg-white shadow-lg rounded-2xl overflow-hidden mb-8">
+                    <div class="px-6 py-8 sm:p-10">
+                        <section id="introduction" class="mb-12 api-section">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">简介</h2>
+                            <p class="text-gray-700 mb-4">
+                                Cursor长效Token API允许开发者通过HTTP请求获取长期有效的Cursor访问令牌。这些令牌可用于Cursor的API调用和自动化服务。
+                            </p>
+                            <p class="text-gray-700 mb-4">
+                                API使用标准的HTTP协议，返回JSON格式的数据。所有API请求都通过HTTPS进行，以确保数据的安全传输。
+                            </p>
+                            <div class="bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r my-6">
+                                <div class="flex">
+                                    <div class="flex-shrink-0">
+                                        <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                                    </div>
+                                    <div class="ml-3">
+                                        <p class="text-sm text-yellow-700">
+                                            本API仅用于学习和研究目的。使用此API获取的长效Token可能会被Cursor随时失效。请遵守Cursor的服务条款。
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="authentication" class="mb-12 api-section">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">认证方式</h2>
+                            <p class="text-gray-700 mb-4">
+                                要使用API获取长效Token，您需要提供Cursor的会话Token（WorkosCursorSessionToken）。这个Token可以在Cursor应用程序的开发者工具中找到，通常位于Cookie中。
+                            </p>
+                            <div class="bg-gray-50 border border-gray-200 rounded-lg p-4">
+                                <h3 class="text-sm font-medium text-gray-700 mb-2">获取会话Token的步骤：</h3>
+                                <ol class="list-decimal pl-5 text-gray-700 space-y-2">
+                                    <li>在Cursor个人页中，按F12打开开发者工具</li>
+                                    <li>切换到"应用程序"或"Application"标签页</li>
+                                    <li>在左侧导航中展开"Cookies"，选择Cursor相关域名</li>
+                                    <li>找到"WorkosCursorSessionToken"字段，复制其值</li>
+                                </ol>
+                            </div>
+                        </section>
+
+                        <section id="endpoints" class="mb-12 api-section">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">API端点</h2>
+                            
+                            <div id="get-token" class="mb-8 api-section">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-3">获取长效Token</h3>
+                                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r mb-4">
+                                    <p class="text-indigo-700 font-medium">POST /api/token</p>
+                                </div>
+                                <p class="text-gray-700 mb-4">
+                                    通过此端点发送请求，使用会话Token获取长效访问Token。
+                                </p>
+                                
+                                <h4 class="text-lg font-medium text-gray-800 mt-6 mb-3">请求参数</h4>
+                                <div class="overflow-x-auto">
+                                    <table class="min-w-full divide-y divide-gray-200">
+                                        <thead class="bg-gray-50">
+                                            <tr>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    参数名
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    类型
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    是否必须
+                                                </th>
+                                                <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                    描述
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="bg-white divide-y divide-gray-200">
+                                            <tr>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                    session_token
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    String
+                                                </td>
+                                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                    是
+                                                </td>
+                                                <td class="px-6 py-4 text-sm text-gray-500">
+                                                    Cursor会话Token，从Cookie中获取的WorkosCursorSessionToken值
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </section>
+
+                        <section id="responses" class="mb-12 api-section">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">响应格式</h2>
+                            <p class="text-gray-700 mb-4">
+                                所有API响应均为JSON格式，并包含一个顶级<code class="bg-gray-100 rounded px-1">success</code>字段，表示请求是否成功。
+                            </p>
+                            
+                            <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">成功响应</h3>
+                            <p class="text-gray-700 mb-3">
+                                成功时，响应将包含以下字段：
+                            </p>
+<pre><code class="language-json">{
+    "success": true,
+    "userId": "user_123456",
+    "accessToken": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9..."
+}</code></pre>
+                            
+                            <h3 class="text-lg font-medium text-gray-800 mt-6 mb-3">错误响应</h3>
+                            <p class="text-gray-700 mb-3">
+                                失败时，响应将包含错误信息：
+                            </p>
+<pre><code class="language-json">{
+    "success": false,
+    "error": "无法获取token，请检查会话token是否有效"
+}</code></pre>
+                        </section>
+
+                        <section id="examples" class="mb-12 api-section">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">使用示例</h2>
+                            
+                            <div id="curl" class="mb-8 api-section">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-3">cURL</h3>
+<pre><code class="language-bash">curl -X POST https://your-domain.com/api/token \
+  -H "Content-Type: application/json" \
+  -d '{"session_token": "user_0xxxxx%3A%3Aeyxxxxx"}'</code></pre>
+                            </div>
+                            
+                            <div id="python" class="mb-8 api-section">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-3">Python</h3>
+<pre><code class="language-python">import requests
+
+url = "https://your-domain.com/api/token"
+payload = {
+    "session_token": "user_0xxxxx%3A%3Aeyxxxxx"
+}
+headers = {
+    "Content-Type": "application/json"
+}
+
+response = requests.post(url, json=payload, headers=headers)
+data = response.json()
+
+if data["success"]:
+    print(f"获取成功！")
+    print(f"用户ID: {data['userId']}")
+    print(f"访问令牌: {data['accessToken']}")
+else:
+    print(f"获取失败: {data['error']}")</code></pre>
+                            </div>
+                            
+                            <div id="javascript" class="mb-8 api-section">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-3">JavaScript</h3>
+<pre><code class="language-javascript">// 使用 fetch API
+async function getCursorToken(sessionToken) {
+    const response = await fetch('https://your-domain.com/api/token', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            session_token: sessionToken
+        }),
+    });
+    
+    const data = await response.json();
+    
+    if (data.success) {
+        console.log('获取成功！');
+        console.log(`用户ID: ${data.userId}`);
+        console.log(`访问令牌: ${data.accessToken}`);
+        return data;
+    } else {
+        console.error(`获取失败: ${data.error}`);
+        throw new Error(data.error);
+    }
+}
+
+// 调用示例
+getCursorToken('user_0xxxxx%3A%3Aeyxxxxx')
+    .then(data => {
+        // 处理成功响应
+    })
+    .catch(error => {
+        // 处理错误
+    });</code></pre>
+                            </div>
+                        </section>
+
+                        <section id="errors" class="mb-12 api-section">
+                            <h2 class="text-2xl font-bold text-gray-900 mb-4">错误处理</h2>
+                            <p class="text-gray-700 mb-4">
+                                API返回标准的HTTP状态码和详细的错误信息，以帮助开发者诊断问题。
+                            </p>
+                            
+                            <div class="overflow-x-auto">
+                                <table class="min-w-full divide-y divide-gray-200">
+                                    <thead class="bg-gray-50">
+                                        <tr>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                状态码
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                错误信息
+                                            </th>
+                                            <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                                描述
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody class="bg-white divide-y divide-gray-200">
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                400
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                缺少session_token参数
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">
+                                                请求中缺少必要的会话Token
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                400
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                无法获取token，请检查会话token是否有效
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">
+                                                提供的会话Token无效或已过期
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                                                500
+                                            </td>
+                                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                                                服务器内部错误
+                                            </td>
+                                            <td class="px-6 py-4 text-sm text-gray-500">
+                                                服务器处理请求时发生错误
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </main>
+        </div>
+
+        <footer class="relative z-10 bg-white/80 border-t border-gray-200 py-6">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <p class="text-center text-sm text-gray-500">
+                    本工具仅用于学习研究，请勿用于非法用途
+                </p>
+                <p class="text-center text-xs text-gray-400 mt-2">
+                    &copy; 2023 Cursor长效Token获取
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        // 初始化代码高亮
+        document.addEventListener('DOMContentLoaded', () => {
+            hljs.highlightAll();
+        });
+
+        // 平滑滚动
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                const targetElement = document.querySelector(targetId);
+                
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+</html>

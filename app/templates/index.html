@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cursor 长效Token获取</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="relative overflow-hidden">
+        <div class="gradient-bg absolute inset-0 opacity-10 z-0"></div>
+        <header class="relative z-10 py-6 px-4 sm:px-6 lg:px-8 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-indigo-600">
+                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                        <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                    </svg>
+                    <h1 class="text-xl font-semibold text-gray-900">Cursor 长效Token获取</h1>
+                </div>
+                <div class="flex items-center space-x-4">
+                    <a href="/api" class="text-gray-500 hover:text-gray-700">
+                        <i class="fas fa-book mr-1"></i> API文档
+                    </a>
+                    <a href="https://github.com/kiritoko1029/cursor-longtoken" target="_blank" class="text-gray-500 hover:text-gray-700">
+                        <i class="fab fa-github text-xl"></i>
+                    </a>
+                </div>
+            </div>
+        </header>
+
+        <main class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
+                <div class="px-6 py-8 sm:p-10">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">获取Cursor长效访问令牌</h2>
+                        <p class="mt-2 text-gray-600">只需输入会话token，即可获取长期有效的访问令牌</p>
+                    </div>
+
+                    {% if error %}
+                    <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r">
+                        <div class="flex items-center">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-exclamation-circle text-red-500"></i>
+                            </div>
+                            <div class="ml-3">
+                                <p class="text-sm text-red-700">{{ error }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <form action="/get-token" method="post" class="space-y-6">
+                        <div>
+                            <label for="session_token" class="block text-sm font-medium text-gray-700">WorkosCursorSessionToken</label>
+                            <div class="mt-1 relative rounded-md shadow-sm">
+                                <input type="text" id="session_token" name="session_token" 
+                                    class="block w-full pr-10 py-3 text-gray-700 bg-gray-50 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-indigo-500"
+                                    placeholder="输入类似 user_0xxxxxx%3A%3Aeyxxxxxx 的session_token" required>
+                            </div>
+                            <p class="mt-2 text-sm text-gray-500">
+                                <i class="fas fa-info-circle mr-1"></i>
+                                在Cursor应用的开发工具中查看Cookie，找到 WorkosCursorSessionToken 的值
+                            </p>
+                        </div>
+                        <button type="submit" class="w-full py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors duration-200">
+                            获取长效Token
+                        </button>
+                    </form>
+                </div>
+
+                <div class="bg-gray-50 px-6 py-8 sm:p-10 border-t border-gray-200">
+                    <h3 class="text-lg font-medium text-gray-900 mb-4">API 使用说明</h3>
+                    <p class="text-gray-600 mb-4">除了Web界面外，本工具也提供了API接口：</p>
+
+                    <div class="space-y-4">
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">请求示例：</h4>
+                            <div class="bg-gray-800 rounded-lg overflow-hidden">
+                                <pre class="p-4 text-sm text-gray-300 overflow-x-auto"><code>POST /api/token
+Content-Type: application/json
+
+{
+    "session_token": "your_session_token"
+}</code></pre>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h4 class="text-sm font-medium text-gray-700 mb-2">响应示例：</h4>
+                            <div class="bg-gray-800 rounded-lg overflow-hidden">
+                                <pre class="p-4 text-sm text-gray-300 overflow-x-auto"><code>{
+    "success": true,
+    "userId": "user_123456",
+    "accessToken": "eyJhbGci..."
+}</code></pre>
+                            </div>
+                        </div>
+                        
+                        <div class="mt-4 text-center">
+                            <a href="/api" class="inline-flex items-center text-indigo-600 hover:text-indigo-800">
+                                <span>查看完整API文档</span>
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-4 h-4 ml-1">
+                                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                                </svg>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="border-t border-gray-200 pt-6">
+                <p class="text-center text-sm text-gray-500">
+                    本工具仅用于学习研究，请勿用于非法用途
+                </p>
+                <p class="text-center text-xs text-gray-400 mt-2">
+                    &copy; 2023 Cursor长效Token获取
+                </p>
+            </div>
+        </footer>
+    </div>
+</body>
+</html>

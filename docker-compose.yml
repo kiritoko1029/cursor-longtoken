@@ -1,0 +1,13 @@
+version: '3'
+
+services:
+  web:
+    build: .
+    container_name: cursor-longtoken
+    ports:
+      - "5000:5000"
+    restart: unless-stopped
+    environment:
+      - SECRET_KEY=${SECRET_KEY:-b0c9a78e04a7b4b6c0d4e5f6a7b8c9d0}
+    volumes:
+      - /dev/shm:/dev/shm  # 共享内存，解决Chrome容器内存问题

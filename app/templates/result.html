@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token 获取结果 - Cursor 长效Token获取</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+        .gradient-bg {
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .token-box {
+            word-break: break-all;
+            font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+            max-height: 200px;
+            overflow-y: auto;
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen">
+    <div class="relative overflow-hidden">
+        <div class="gradient-bg absolute inset-0 opacity-10 z-0"></div>
+        <header class="relative z-10 py-6 px-4 sm:px-6 lg:px-8 border-b border-gray-100 bg-white/80 backdrop-blur-sm">
+            <div class="max-w-7xl mx-auto flex items-center justify-between">
+                <div class="flex items-center space-x-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" class="w-8 h-8 text-indigo-600">
+                        <path d="M21.731 2.269a2.625 2.625 0 00-3.712 0l-1.157 1.157 3.712 3.712 1.157-1.157a2.625 2.625 0 000-3.712zM19.513 8.199l-3.712-3.712-8.4 8.4a5.25 5.25 0 00-1.32 2.214l-.8 2.685a.75.75 0 00.933.933l2.685-.8a5.25 5.25 0 002.214-1.32l8.4-8.4z" />
+                        <path d="M5.25 5.25a3 3 0 00-3 3v10.5a3 3 0 003 3h10.5a3 3 0 003-3V13.5a.75.75 0 00-1.5 0v5.25a1.5 1.5 0 01-1.5 1.5H5.25a1.5 1.5 0 01-1.5-1.5V8.25a1.5 1.5 0 011.5-1.5h5.25a.75.75 0 000-1.5H5.25z" />
+                    </svg>
+                    <h1 class="text-xl font-semibold text-gray-900">Cursor 长效Token获取</h1>
+                </div>
+            </div>
+        </header>
+
+        <main class="relative z-10 max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-white shadow-lg rounded-2xl overflow-hidden">
+                <div class="px-6 py-8 sm:p-10">
+                    <div class="text-center mb-8">
+                        <h2 class="text-2xl font-bold text-gray-900">Token 获取结果</h2>
+                    </div>
+
+                    {% if success %}
+                        <div class="mb-6 bg-green-50 border-l-4 border-green-500 p-4 rounded-r">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-check-circle text-green-500"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-green-800">获取成功！</h3>
+                                    <p class="text-sm text-green-700 mt-1">已成功获取Cursor长效访问令牌。</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mb-8">
+                            <div class="mb-1 flex justify-between items-center">
+                                <h3 class="text-sm font-medium text-gray-700">用户ID (userId):</h3>
+                                <div class="flex space-x-2">
+                                    <button onclick="copyToClipboard('userId')" class="text-xs inline-flex items-center px-2.5 py-1 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                        <i class="far fa-copy mr-1"></i> 复制
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="userId" class="token-box bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800">{{ userId }}</div>
+                        </div>
+
+                        <div class="mb-8">
+                            <div class="mb-1 flex justify-between items-center">
+                                <h3 class="text-sm font-medium text-gray-700">访问令牌 (accessToken):</h3>
+                                <div class="flex space-x-2">
+                                    <button onclick="copyToClipboard('accessToken')" class="text-xs inline-flex items-center px-2.5 py-1 border border-gray-300 rounded-md text-gray-700 bg-white hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                        <i class="far fa-copy mr-1"></i> 复制
+                                    </button>
+                                </div>
+                            </div>
+                            <div id="accessToken" class="token-box bg-gray-50 border border-gray-200 rounded-lg p-3 text-sm text-gray-800">{{ accessToken }}</div>
+                        </div>
+
+                        <!-- 下载配置功能 -->
+                        <div class="mt-8 p-4 bg-indigo-50 rounded-lg">
+                            <h3 class="text-sm font-medium text-indigo-800 mb-2">保存Token</h3>
+                            <p class="text-xs text-indigo-700 mb-4">将Token信息保存到本地文件，方便后续使用：</p>
+                            
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="downloadTokenAsJSON()" class="inline-flex items-center px-3 py-2 border border-indigo-600 text-sm leading-4 font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                    <i class="fas fa-file-code mr-2"></i> 下载JSON
+                                </button>
+                                <button onclick="downloadTokenAsTxt()" class="inline-flex items-center px-3 py-2 border border-indigo-600 text-sm leading-4 font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                    <i class="fas fa-file-alt mr-2"></i> 下载TXT
+                                </button>
+                                <button onclick="downloadTokenAsEnv()" class="inline-flex items-center px-3 py-2 border border-indigo-600 text-sm leading-4 font-medium rounded-md text-indigo-600 bg-white hover:bg-indigo-50 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                                    <i class="fas fa-file-invoice mr-2"></i> 下载.env
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="mt-6 bg-yellow-50 border-l-4 border-yellow-500 p-4 rounded-r">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-exclamation-triangle text-yellow-500"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-yellow-700">此访问令牌有较长的有效期，请妥善保管，避免泄露。</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% else %}
+                        <div class="mb-6 bg-red-50 border-l-4 border-red-500 p-4 rounded-r">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-times-circle text-red-500"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <h3 class="text-sm font-medium text-red-800">获取失败</h3>
+                                    <p class="text-sm text-red-700 mt-1">{{ error }}</p>
+                                </div>
+                            </div>
+                        </div>
+                    {% endif %}
+
+                    <div class="mt-8 text-center">
+                        <a href="/" class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors">
+                            <i class="fas fa-arrow-left mr-2"></i> 返回首页
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <footer class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+            <div class="border-t border-gray-200 pt-6">
+                <p class="text-center text-sm text-gray-500">
+                    本工具仅用于学习研究，请勿用于非法用途
+                </p>
+                <p class="text-center text-xs text-gray-400 mt-2">
+                    &copy; 2023 Cursor长效Token获取
+                </p>
+            </div>
+        </footer>
+    </div>
+
+    <script>
+        function copyToClipboard(elementId) {
+            const element = document.getElementById(elementId);
+            const text = element.innerText;
+            
+            navigator.clipboard.writeText(text).then(() => {
+                // 创建一个临时元素来显示复制成功的消息
+                const notification = document.createElement('div');
+                notification.className = 'fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg';
+                notification.innerHTML = '<div class="flex items-center"><i class="fas fa-check mr-2"></i> 复制成功</div>';
+                document.body.appendChild(notification);
+                
+                // 2秒后移除通知
+                setTimeout(() => {
+                    notification.classList.add('opacity-0', 'transition-opacity', 'duration-500');
+                    setTimeout(() => document.body.removeChild(notification), 500);
+                }, 2000);
+            }).catch(err => {
+                console.error('复制失败:', err);
+                alert('复制失败，请手动复制');
+            });
+        }
+
+        function downloadTokenAsJSON() {
+            const userId = document.getElementById('userId').innerText;
+            const accessToken = document.getElementById('accessToken').innerText;
+            
+            const data = {
+                userId: userId,
+                accessToken: accessToken,
+                timestamp: new Date().toISOString()
+            };
+            
+            const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+            downloadBlob(blob, 'cursor_token.json');
+        }
+        
+        function downloadTokenAsTxt() {
+            const userId = document.getElementById('userId').innerText;
+            const accessToken = document.getElementById('accessToken').innerText;
+            
+            const content = `Cursor长效Token信息
+--------------------
+获取时间: ${new Date().toLocaleString()}
+
+用户ID (userId):
+${userId}
+
+访问令牌 (accessToken):
+${accessToken}
+
+注意: 请妥善保管此信息，避免泄露。
+`;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            downloadBlob(blob, 'cursor_token.txt');
+        }
+        
+        function downloadTokenAsEnv() {
+            const userId = document.getElementById('userId').innerText;
+            const accessToken = document.getElementById('accessToken').innerText;
+            
+            const content = `# Cursor长效Token - 生成于 ${new Date().toLocaleString()}
+CURSOR_USER_ID="${userId}"
+CURSOR_ACCESS_TOKEN="${accessToken}"
+`;
+            
+            const blob = new Blob([content], { type: 'text/plain' });
+            downloadBlob(blob, '.env.cursor');
+        }
+        
+        function downloadBlob(blob, filename) {
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            
+            // 清理
+            setTimeout(() => {
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+            }, 0);
+        }
+    </script>
+</body>
+</html>
