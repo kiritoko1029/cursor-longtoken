@@ -13,12 +13,22 @@
 
 ## 环境要求
 
-- Docker 和 Docker Compose（推荐，用于容器化部署）
+- Docker（推荐，用于容器化部署）
 - 或者 Python 3.8+ 环境和Chrome浏览器（本地开发）
 
 ## 快速开始
 
-### 使用Docker部署（推荐）
+### 使用Docker Hub镜像部署（最简方式）
+
+直接从Docker Hub拉取并运行镜像：
+
+```bash
+docker run -d -p 5000:5000 --name cursor-token 195658/cursor-longtoken:latest
+```
+
+访问服务：打开浏览器，访问 http://localhost:5000
+
+### 使用Docker Compose本地构建
 
 1. 克隆仓库：
 
@@ -108,6 +118,13 @@ Content-Type: application/json
 - **容器化**: Docker + Docker Compose
 - **自动化**: Selenium WebDriver
 - **浏览器管理**: webdriver-manager
+
+## Docker镜像信息
+
+- **Docker Hub仓库**: [195658/cursor-longtoken](https://hub.docker.com/r/195658/cursor-longtoken)
+- **镜像标签**: latest
+- **镜像大小**: ~1.1GB (包含Chrome浏览器和所有依赖)
+- **暴露端口**: 5000
 
 ## 注意事项
 
